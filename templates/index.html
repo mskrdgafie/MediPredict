@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediPredict - Disease Prediction System</title>
+    <style>
+        /* styles.css */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    text-align: center;
+}
+
+h1 {
+    color: #007bff;
+}
+
+.subtitle {
+    color: #555;
+}
+
+.inputField, .fileInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.fileInputLabel {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.predictButton {
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.predictButton:hover {
+    background-color: #0056b3;
+}
+
+.hidden {
+    display: none;
+}
+
+h2 {
+    color: #007bff;
+    margin-bottom: 10px;
+}
+
+.resultText {
+    margin-bottom: 8px;
+    color: #333;
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MediPredict</h1>
+        <p class="subtitle">Enter your symptoms and upload an image for disease prediction and medication suggestion.</p>
+
+        <form id="symptomForm" enctype="multipart/form-data">
+            <label for="symptoms">Age</label>
+            <input type="text" id="age" name="age" class="inputField" required>
+            <label for="symptoms">Sex</label>
+            <input type="text" id="sex" name="sex" class="inputField" required>
+            <label for="symptoms">Symptoms (comma-separated):</label>
+            <input type="text" id="symptoms" name="symptoms" class="inputField" required>
+
+            <label for="symptomImage" class="fileInputLabel">Upload Image:</label>
+            <input type="file" id="symptomImage" name="symptomImage" accept="image/*" class="fileInput" required>
+
+            <button type="button" onclick="predictDisease()" class="predictButton">Predict</button>
+        </form>
+
+        <div id="result" class="hidden">
+            <h2>Prediction Result:</h2>
+            <p id="predictedDisease" class="resultText"></p>
+            <p id="medicationSuggestion" class="resultText"></p>
+        </div>
+    </div>
+
+    <script>
+        // Update the predictDisease function in your script.js
+function predictDisease() {
+    const symptomsInput = document.getElementById('symptoms').value;
+    const imageInput = document.getElementById('symptomImage').files[0];
+    const resultContainer = document.getElementById('result');
+    const predictedDiseaseElement = document.getElementById('predictedDisease');
+    const medicationSuggestionElement = document.getElementById('medicationSuggestion');
+
+    // Simulate FormData for image upload
+    const formData = new FormData();
+    formData.append('symptoms', symptomsInput);
+    formData.append('symptomImage', imageInput);
+
+    // Simulate a call to the backend for disease prediction
+    fetch('/api/predict/', {
+        method: 'POST',
+        body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update the UI with the predicted disease and medication suggestion
+        predictedDiseaseElement.textContent = `Predicted Disease: ${data.predictedDisease}`;
+        medicationSuggestionElement.textContent = `Medication Suggestion: ${data.medicationSuggestion}`;
+
+        // Display the result container
+        resultContainer.classList.remove('hidden');
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+    </script>
+</body>
+</html>
